@@ -1,14 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @ObjectType()
+@Schema()
 export class User {
   @Field()
-  @Prop()
   id: string;
 
   @Field()
-  @Prop()
+  @Prop({ unique: true })
   username: string;
 
   @Field()
