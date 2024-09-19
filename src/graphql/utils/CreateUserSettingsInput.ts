@@ -1,13 +1,13 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+// import { InputType, Field } from '@nestjs/graphql';
 
-@InputType()
-export class CreateUserSettingsInput {
-  @Field((type) => Int)
-  userId: number;
+// @InputType()
+// export class CreateUserSettingsInput {
+//   @Field()
+//   userId: string;
 
-  @Field({ nullable: true, defaultValue: false })
-  receiveNotifications: boolean;
+//   @Field({ nullable: true, defaultValue: false })
+//   receiveNotifications: boolean;
 
-  @Field({ nullable: true, defaultValue: false })
-  receiveEmails: boolean;
-}
+//   @Field({ nullable: true, defaultValue: false })
+//   receiveEmails: boolean;
+// }

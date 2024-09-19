@@ -1,47 +1,33 @@
-import {
-  Resolver,
-  Query,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-  Mutation,
-} from '@nestjs/graphql';
-import { User } from '../graphql/models/User';
-import { mockUsers } from '../__mocks__/mockUsers';
-import { UserSetting } from '../graphql/models/UserSetting';
-import { mockUserSettings } from '../__mocks__/mockUserSettings';
+import { Resolver, Query, Args, Mutation, ResolveField } from '@nestjs/graphql';
 import { CreateUserInput } from '../graphql/utils/CreateUserInput';
-import { Inject } from '@nestjs/common';
 import { UserService } from './UserService';
-import { UserSettingService } from './UserSettingService';
+import { User } from 'src/graphql/models/User.schema';
 
-export let incrementalId = 3;
-
-@Resolver((of) => User)
+@Resolver()
 export class UserResolver {
-  constructor(
-    private userService: UserService,
-    private userSettingService: UserSettingService,
-  ) {}
-
-  @Query((returns) => User, { nullable: true })
-  getUserById(@Args('id', { type: () => Int }) id: number) {
+  constructor(private userService: UserService) {}
+  @Query(() => User, { nullable: true })
+  async getUserById(@Args('id') id: string) {
     return this.userService.getUserById(id);
   }
 
   @Query(() => [User])
-  getUsers() {
+  async getUsers(): Promise<User[] | null> {
     return this.userService.getUsers();
   }
 
-  // @ResolveField((returns) => UserSetting, { name: 'settings', nullable: true })
-  // getUserSettings(@Parent() user: User) {
-  //   return this.userSettingService.getUserSettingById(user.id);
-  // }
-
-  @Mutation((returns) => User)
-  createUser(@Args('createUserData') createUserData: CreateUserInput) {
+  @Mutation(() => User)
+  async createUser(@Args('createUserData') createUserData: CreateUserInput) {
     return this.userService.createUser(createUserData);
+  }
+
+  @ResolveField((returns) => UserSetting, { name: 'settings', nullable: true })
+  getUserSettings(@Parent() user: User) {
+    return this.userSettingService.getUserSettingById(user.id);
+  }
+
+  @Mutation(() => User)
+  async deleteUserById(@Args('id') id: string) {
+    return await this.userService.deleteUserById(id);
   }
 }

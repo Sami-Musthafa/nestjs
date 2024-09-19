@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { User } from '../graphql/models/User';
-import { UserSetting } from '../graphql/models/UserSetting';
 import { CreateUserSettingsInput } from '../graphql/utils/CreateUserSettingsInput';
 import { Repository } from 'typeorm';
+import { UserSetting } from 'src/graphql/models/UserSetting';
 
 @Injectable()
 export class UserSettingService {
   constructor(
-    @InjectRepository(UserSetting)
-    private userSettingsRepository: Repository<UserSetting>,
-    @InjectRepository(User)
+    @InjectModel(UserSetting.name)
+    private userSettingsRepository: Model<UserSetting>,
+    @InjectModel(User.name)
     private userRepository: Repository<User>,
   ) {}
 
-  getUserSettingById(userId: number) {
+  getUserSettingById(userId: string) {
     return this.userSettingsRepository.findOneBy({ userId });
   }
 

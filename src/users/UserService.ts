@@ -1,28 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from '../graphql/models/User';
+import { User } from '../graphql/models/User.schema';
 import { CreateUserInput } from '../graphql/utils/CreateUserInput';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
-
-  getUsers() {
-    return this.usersRepository.find({ relations: ['settings'] });
+  constructor(@InjectModel(User.name) private userService) {}
+  async getUsers() {
+    return await this.userService.find();
   }
 
-  getUserById(id: number) {
-    return this.usersRepository.findOne({
-      where: { id },
-      relations: ['settings'],
-    });
+  async getUserById(id: string) {
+    return await this.userService.findOne({ id });
   }
 
-  createUser(createUserData: CreateUserInput) {
-    const newUser = this.usersRepository.create(createUserData);
-    return this.usersRepository.save(newUser);
+  async createUser(createUserData: CreateUserInput) {
+    // const { username, displayName, id } = createUserData;
+    const newUser = new this.userService(createUserData);
+    return await newUser.save();
+  }
+
+  async deleteUserById(id: string) {
+    return await this.userService.deleteOne(id);
   }
 }
